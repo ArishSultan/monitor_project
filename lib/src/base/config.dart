@@ -7,6 +7,13 @@ import 'package:flutter/material.dart';
 class AppConfig extends ChangeNotifier {
   AppConfig._(this._inputDirectory, this._outputDirectory);
 
+  bool get isWatching => _isWatching;
+
+  set isWatching(bool value) {
+    _isWatching = value;
+    notifyListeners();
+  }
+
   Directory get inputDirectory => _inputDirectory;
 
   set inputDirectory(Directory dir) {
@@ -14,8 +21,8 @@ class AppConfig extends ChangeNotifier {
     notifyListeners();
 
     _configFile.writeAsString(
-      '{"inputDirectory": "${inputDirectory.path}",'
-      '"outputDirectory": "${outputDirectory.path}"}',
+      '{"inputDirectory": "${inputDirectory.path.replaceAll(r'\', r'\\')}",'
+      '"outputDirectory": "${outputDirectory.path.replaceAll(r'\', r'\\')}"}',
     );
   }
 
@@ -26,8 +33,8 @@ class AppConfig extends ChangeNotifier {
     notifyListeners();
 
     _configFile.writeAsString(
-      '{"inputDirectory": "${inputDirectory.path}",'
-      '"outputDirectory": "${outputDirectory.path}"}',
+      '{"inputDirectory": "${inputDirectory.path.replaceAll(r'\', r'\\')}",'
+      '"outputDirectory": "${outputDirectory.path.replaceAll(r'\', r'\\')}"}',
     );
   }
 
@@ -39,21 +46,27 @@ class AppConfig extends ChangeNotifier {
     if (!(await _configFile.exists())) {
       await _configFile.create();
       _configFile.writeAsString(
-        '{"inputDirectory": "${Directory.current}",'
-        '"outputDirectory": "${Directory.current}"}',
+        '{"inputDirectory": "${Directory.current.path.replaceAll(r'\', r'\\')}",'
+        '"outputDirectory": "${Directory.current.path.replaceAll(r'\', r'\\')}"}',
       );
 
       _instance = AppConfig._(Directory.current, Directory.current);
     } else {
-      final _json = jsonDecode(await _configFile.readAsString());
+      Map<String, dynamic>? _json;
+      try {
+        _json = jsonDecode(await _configFile.readAsString());
+      } catch (e) {
+        /// Some task.
+      }
 
       _instance = AppConfig._(
-        Directory(_json['inputDirectory'] ?? Directory.current.path),
-        Directory(_json['outputDirectory'] ?? Directory.current.path),
+        Directory(_json?['inputDirectory'] ?? Directory.current.path),
+        Directory(_json?['outputDirectory'] ?? Directory.current.path),
       );
     }
   }
 
+  bool _isWatching = false;
   Directory _inputDirectory;
   Directory _outputDirectory;
 
