@@ -2,10 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LogsController extends ChangeNotifier {
-  final _logs = <String>['asd', 'asdasd'];
+  final _logs = <String>[];
 
   void addLog(String text) {
-    _logs.add('[${DateTime.now()}] - $text');
+    final date = DateTime.now();
+
+    final day = _fixZeros(date.day);
+    final hour = _fixZeros(date.hour);
+    final year = _fixZeros(date.year);
+    final month = _fixZeros(date.month);
+    final minute = _fixZeros(date.minute);
+    final second = _fixZeros(date.second);
+
+    _logs.add('[$year-$month-$day $hour:$minute:$second] - $text');
     notifyListeners();
   }
 }
@@ -46,9 +55,11 @@ class _LogsViewState extends State<LogsView> {
               '* ',
               style: TextStyle(fontFamily: 'Cascadia Code'),
             ),
-            Text(
-              widget.controller._logs[index],
-              style: const TextStyle(fontFamily: 'Cascadia Code'),
+            Expanded(
+              child: Text(
+                widget.controller._logs[index],
+                style: const TextStyle(fontFamily: 'Cascadia Code', fontSize: 10),
+              ),
             )
           ]);
         },
@@ -61,4 +72,12 @@ class _LogsViewState extends State<LogsView> {
     widget.controller.removeListener(rebuild);
     super.dispose();
   }
+}
+
+String _fixZeros(int num) {
+  if (num < 10) {
+    return '0$num';
+  }
+
+  return num.toString();
 }
