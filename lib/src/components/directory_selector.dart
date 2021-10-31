@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:monitor_project/src/base/config.dart';
 
 class DirectorySelector extends StatelessWidget {
   const DirectorySelector({
@@ -30,11 +31,11 @@ class DirectorySelector extends StatelessWidget {
             ),
           ),
         ),
-        Expanded(child: Text(directory, softWrap: true)),
+        SingleChildScrollView(child: Expanded(child: Text(directory, softWrap: true))),
         TextButton(
-          onPressed: pickDirectory,
           child: const Icon(Icons.edit_outlined, size: 20),
           style: TextButton.styleFrom(minimumSize: const Size.square(35)),
+          onPressed: AppConfig.instance.isWatching ? null : pickDirectory,
         )
       ]),
     );
