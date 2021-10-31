@@ -18,13 +18,6 @@ class DirectorySelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
-      decoration: const BoxDecoration(
-        color: Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.all(Radius.circular(6)),
-        boxShadow: [
-          BoxShadow(blurRadius: 10, color: Color.fromRGBO(0, 0, 0, .2)),
-        ],
-      ),
       child: Row(children: [
         Container(
           width: 104,
