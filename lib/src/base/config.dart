@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:path/path.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
 class AppConfig extends ChangeNotifier {
@@ -38,10 +39,21 @@ class AppConfig extends ChangeNotifier {
     );
   }
 
+  static final converterPath =
+      join(Directory.systemTemp.path, 'ExcelToPDF.exe');
+
   static AppConfig get instance => _instance;
 
   static Future<void> initialize() async {
     _configFile = File(join(Directory.systemTemp.path, 'monitor_config.json'));
+
+    final _converter = File(converterPath);
+    if (!(await _converter.exists())) {
+      await _converter.create();
+      await _converter.writeAsBytes(
+        (await rootBundle.load('assets/ExcelToPDF.exe')).buffer.asInt8List(),
+      );
+    }
 
     if (!(await _configFile.exists())) {
       await _configFile.create();
