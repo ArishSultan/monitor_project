@@ -31,7 +31,9 @@ class DirectorySelector extends StatelessWidget {
             ),
           ),
         ),
-        SingleChildScrollView(child: Expanded(child: Text(directory, softWrap: true))),
+        Expanded(
+          child: SingleChildScrollView(child: Text(directory, softWrap: true)),
+        ),
         TextButton(
           child: const Icon(Icons.edit_outlined, size: 20),
           style: TextButton.styleFrom(minimumSize: const Size.square(35)),
