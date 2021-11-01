@@ -4,6 +4,7 @@ import 'package:monitor_project/src/components/main_page.dart';
 
 class App extends StatelessWidget {
   static Future<void> initializeAndRun() async {
+    WidgetsFlutterBinding.ensureInitialized();
     await AppConfig.initialize();
 
     return runApp(const App._());
