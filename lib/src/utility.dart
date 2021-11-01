@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:csv/csv.dart';
 import 'package:excel/excel.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:monitor_project/src/base/config.dart';
 import 'package:path/path.dart';
 
 // const _ = {
@@ -87,9 +87,22 @@ Future<void> createPDF(String path, String outputPath) async {
         CellIndex.indexByString(placeholders[i]),
         values[i],
       );
-
-      File(join(outputPath, basenameWithoutExtension(path) + '.xlsx'))
-          .writeAsBytes(template.save()!);
     }
   }
+
+  final outputFileName = basenameWithoutExtension(path);
+
+  final outputExcelFilePath = join(outputPath, outputFileName + '.xlsx');
+  final outputPDFFilePath = join(outputPath,
+      outputFileName + ' - [${DateTime.now().millisecondsSinceEpoch}].pdf');
+
+  final outputExcelFile = File(outputExcelFilePath);
+  outputExcelFile.writeAsBytes(template.save()!);
+
+  await Process.run(AppConfig.converterPath, [
+    outputExcelFilePath,
+    outputPDFFilePath,
+  ]);
+
+  await outputExcelFile.delete();
 }
