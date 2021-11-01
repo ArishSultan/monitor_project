@@ -33,7 +33,17 @@ class _MainPageState extends State<MainPage> {
     if (event.type == ChangeType.ADD || event.type == ChangeType.MODIFY) {
       final ext = extension(event.path);
 
+      if (ext == '.pdf') {
+        logsController.addLog(
+          '(${event.type.toString()}) ${basename(event.path)}',
+        );
+      }
+
       if (ext == '.csv' || ext == '.txt') {
+        logsController.addLog(
+          '(${event.type.toString()}) ${basename(event.path)}',
+        );
+
         createPDF(event.path, AppConfig.instance.outputDirectory.path);
       }
     }
